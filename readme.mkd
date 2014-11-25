@@ -1,7 +1,7 @@
 This is the Node.js Socket.IO server of the UDB3 search project.
 
 Use it in conjunction with the [UDB3 AngularJS application][udb3-angular-app] 
-and one of the UDB3 backend implementations ([Silex](udb3-silex-backend) or 
+and one of the UDB3 backend implementations ([Silex][udb3-silex-backend] or 
 [Drupal][udb3-drupal-backend]).
 
 
