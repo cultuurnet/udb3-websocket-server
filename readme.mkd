@@ -1,0 +1,98 @@
+This is the Node.js Socket.IO server of the UDB3 search project.
+
+Use it in conjunction with the [UDB3 AngularJS application][udb3-angular-app] 
+and one of the UDB3 backend implementations ([Silex](udb3-silex-backend) or 
+[Drupal][udb3-drupal-backend]).
+
+
+[TOC]
+
+
+# Getting started
+
+## Requirements
+
+Ensure you have installed:
+
+* [Node.js] and the npm package manager
+* [Redis]
+
+
+## Download code & required libraries
+
+Clone the [UDB3 Socket.IO][udb3-websockets] git repository.
+
+Install its dependencies with npm:
+
+```
+npm install
+```
+
+## Start the server
+
+Start the Socket.IO server, which listens on port 3000:
+
+```
+node app.js
+```
+
+
+# Running it as a service
+
+We recommend to use [Supervisor] to launch and control the UDB3 Socket.IO 
+server process.
+
+Below is a sample Supervisor configuration file, named *udb3-websockets.conf*.
+Replace /path/to/udb3-websockets-server with the path to your git clone, and 
+replace *ubuntu* with the unprivileged user you want to run the server as.
+Put the configuration file at the right location depending on the approach your
+ Linux flavor takes. On ubuntu, Supervisor config files typically go in the
+ directory */etc/supervisor/conf.d/*.
+
+```
+[program:udb3-websockets]
+directory=/path/to/udb3-websockets
+command=/usr/bin/node app.js
+user=ubuntu
+autostart=true
+autorestart=true
+startsecs=10
+```
+
+
+# Running it behind a reverse proxy
+
+## Apache HTTP Server
+
+Install and enable the mod_rewrite, mod_proxy and mod_proxy_wstunnel Apache 
+modules.
+
+Configuration sample to make Apache proxy incoming requests to the Socket.IO 
+server running on port 3000 on the same host:
+
+```
+RewriteEngine on
+
+RewriteCond %{QUERY_STRING} transport=polling
+RewriteRule /(.*)$ http://localhost:3000/$1 [P]
+
+ProxyRequests off
+ProxyPass /socket.io/ ws://localhost:3000/socket.io/
+ProxyPassReverse /socket.io/ ws://localhost:3000/socket.io/
+```
+
+(tested with Apache 2.4.6)
+
+[udb3-angular-app]: https://bitbucket.org/2dotstwice/culudb-app
+
+[udb3-websockets]: https://bitbucket.org/2dotstwice/culudb-websockets
+
+[udb3-drupal-backend]: https://bitbucket.org/2dotstwice/culudb
+
+[udb3-silex-backend]: https://bitbucket.org/2dotstwice/culudb-silex
+
+[supervisor]: http://supervisord.org/
+
+[Node.js]: http://nodejs.org/
+
+[Redis]: http://redis.io/
