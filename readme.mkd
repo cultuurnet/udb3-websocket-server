@@ -59,6 +59,24 @@ autorestart=true
 startsecs=10
 ```
 
+Then make Supervisor reload its configuration:
+
+```
+sudo supervisorctl reload
+```
+
+Verify the udb3-websockets process is running correctly:
+
+```
+sudo supervisorctl status
+```
+
+This should output something like this (possible among other processes):
+
+```
+udb3-websockets                  RUNNING    pid 16585, uptime 0:00:54
+```
+
 
 # Running it behind a reverse proxy
 
