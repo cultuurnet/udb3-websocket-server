@@ -1,15 +1,33 @@
 var app = require('http').createServer(handler);
 var redis = require('redis');
 var redisAdapter = require('socket.io-redis');
+var fs = require('fs');
+
+var config = {};
+
+var environment = process.env['ENV'];
+
+if (environment) {
+  config = require('./config.' + environment + '.json');
+}
+else {
+  if (fs.existsSync('./config.json')) {
+    config = require('./config.json');
+    console.log('using configuration from config.json');
+  }
+  else {
+    console.log('no config.json file found, using defaults');
+  }
+}
 
 var pub = redis.createClient();
 var sub = redis.createClient(null, null, { detect_buffers: true });
 var io = require('socket.io')(app, {
-  adapter: redisAdapter({ pubClient: pub, subClient: sub })
+  adapter: redisAdapter(config.redis || {})
 });
 
 var fs = require('fs');
-app.listen(3000);
+app.listen(config.port || 3000);
 
 function handler (req, res) {
   fs.readFile(__dirname + '/index.html',

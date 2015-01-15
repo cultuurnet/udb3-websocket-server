@@ -36,6 +36,22 @@ Start the Socket.IO server, which listens on port 3000:
 node app.js
 ```
 
+By default a configuration file _config.json_ is used, when present. You can
+change which configuration file is used by setting the ENV environment variable.
+ For example, the following command will launch the Node.js Socket.IO server
+ with the configuration from _config.dev.json_:
+
+```
+ENV=dev node app.js
+```
+
+For a list of configuration options, read the next section.
+
+# Configuration options
+
+- redis: Options passed to the socket.io-redis adapter. For more info, read the
+[socket.io-redis] documentation. Default: empty.
+- port: The port to listen on. Default: 3000.
 
 # Running it as a service
 
@@ -114,3 +130,5 @@ ProxyPassReverse /socket.io/ ws://localhost:3000/socket.io/
 [Node.js]: http://nodejs.org/
 
 [Redis]: http://redis.io/
+
+[socket.io-redis]: https://github.com/Automattic/socket.io-redis
