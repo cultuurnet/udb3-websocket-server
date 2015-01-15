@@ -38,8 +38,8 @@ node app.js
 
 By default a configuration file _config.json_ is used, when present. You can
 change which configuration file is used by setting the ENV environment variable.
- For example, the following command will launch the Node.js Socket.IO server
- with the configuration from _config.dev.json_:
+For example, the following command will launch the Node.js Socket.IO server
+with the configuration from _config.dev.json_:
 
 ```
 ENV=dev node app.js
