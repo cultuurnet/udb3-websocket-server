@@ -19,20 +19,7 @@ else {
   }
 }
 
-
 var server_options = config.server_options || {};
-
-var http;
-
-if (server_options.key) {
-  server_options.key = fs.readFileSync(server_options.key);
-
-  http = require('https');
-  console.log('Using SSL');
-}
-else {
-  http = require('http');
-}
 
 if (server_options.cert) {
   server_options.cert = fs.readFileSync(server_options.cert);
@@ -42,7 +29,17 @@ if (server_options.ca) {
   server_options.ca = fs.readFileSync(server_options.ca);
 }
 
-var app = http.createServer(server_options, handler);
+var app;
+
+if (server_options.key) {
+  server_options.key = fs.readFileSync(server_options.key);
+
+  app = require('https').createServer(server_options, handler);
+  console.log('Using SSL');
+}
+else {
+  app = require('http').createServer(handler);
+}
 
 var pub = redis.createClient();
 var sub = redis.createClient(null, null, { detect_buffers: true });
