@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "hiredis": "^0.1.17",
+    "hiredis": "^0.4.1",
     "redis": "^0.12.1",
     "socket.io": "^1.2.0",
     "socket.io-emitter": "^0.2.0",
