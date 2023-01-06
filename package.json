@@ -1,7 +1,7 @@
 {
-  "name": "culudb-websocket-server",
-  "version": "0.1.0",
-  "description": "",
+  "name": "udb-websocket-server",
+  "version": "2.0.0",
+  "description": "This is the Node.js Socket.IO server of the UDB3 search project.",
   "main": "app.js",
   "dependencies": {
     "hiredis": "^0.4.1",
@@ -13,10 +13,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:cultuurnet/udb3-websocket-server.git"
-  },
-  "author": "",
+  "repository": "git@github.com:cultuurnet/udb3-websocket-server.git",
+  "author": "simon-debruijn <simon.debruijn@hotmail.com>",
   "license": "ISC"
 }
