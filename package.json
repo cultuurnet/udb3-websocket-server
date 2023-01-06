@@ -4,7 +4,6 @@
   "description": "This is the Node.js Socket.IO server of the UDB3 search project.",
   "main": "app.js",
   "dependencies": {
-    "hiredis": "^0.4.1",
     "redis": "^0.12.1",
     "socket.io": "~1.3.7",
     "socket.io-emitter": "^0.2.0",
