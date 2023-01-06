@@ -2,7 +2,7 @@
   "name": "udb-websocket-server",
   "version": "2.0.0",
   "description": "This is the Node.js Socket.IO server of the UDB3 search project.",
-  "main": "app.js",
+  "main": "src/app.js",
   "type": "module",
   "dependencies": {
     "@socket.io/redis-adapter": "^8.0.0",

@@ -26,10 +26,11 @@ export const initializeSocketIO = async (httpServer, config) => {
     });
 
     io.on("connection", () => {
-      console.log("new connection to the server");
+      console.info("new connection to the server");
     });
   } catch (error) {
     console.error("Initialisation of SocketIOServer failed:");
     console.error(error);
+    process.exit(1);
   }
 };

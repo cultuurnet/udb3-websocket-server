@@ -12,5 +12,5 @@ const httpServer = http.createServer({}, indexPageHandler);
 await initializeSocketIO(httpServer, config);
 
 httpServer.listen(PORT, () =>
-  console.log(`Server listening on port http://localhost:${PORT}`)
+  console.info(`Server listening on port http://localhost:${PORT}`)
 );
