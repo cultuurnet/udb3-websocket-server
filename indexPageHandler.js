@@ -3,8 +3,8 @@ import { pathFromRoot } from "./pathFromRoot.js";
 
 /**
  *
- * @param {http.IncomingMessage} req
- * @param {http.ServerResponse} res
+ * @param {import("http").IncomingMessage} req
+ * @param {import("http").ServerResponse} res
  */
 export const indexPageHandler = async (req, res) => {
   const indexFilePath = pathFromRoot("index.html");
