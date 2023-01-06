@@ -16,6 +16,7 @@
   "author": "simon-debruijn <simon.debruijn@hotmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "nodemon": "^2.0.20",
     "prettier": "^2.8.1"
   }
 }
