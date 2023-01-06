@@ -1,8 +1,28 @@
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  var socket = io('http://udb-socket.dev');
-  socket.on('news', function (data) {
-    console.log(data);
-    socket.emit('my other event', { my: 'data' });
-  });
-</script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socket IO client</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" defer>
+      const status = document.querySelector("#status");
+
+      console.log({ status });
+      const socket = io();
+
+      socket.on("connect", () => {
+        status.textContent = "✅";
+      });
+
+      socket.on("disconnect", () => {
+        status.textContent = "❌";
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Socket IO client</h1>
+    <span>Connected: <span id="status">❌</span></span>
+  </body>
+</html>
