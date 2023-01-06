@@ -1,0 +1,7 @@
+# CODEOWNERS are automatically assigned as possible reviewers to new PRs.
+
+# Jenkins / deployment owners
+Gemfile* @willaerk @paulherbosch
+Jenkinsfile @willaerk @paulherbosch
+Rakefile @willaerk @paulherbosch
+lib/ @willaerk @paulherbosch
