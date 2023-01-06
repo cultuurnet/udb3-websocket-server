@@ -4,7 +4,7 @@ import { createAdapter as createRedisAdapter } from "@socket.io/redis-adapter";
 
 /**
  *
- * @param {http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>} httpServer
+ * @param {import("http").Server} httpServer
  * @param {Record<string, unknown>} config
  */
 export const initializeSocketIO = async (httpServer, config) => {
