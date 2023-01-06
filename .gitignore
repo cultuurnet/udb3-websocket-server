@@ -3,3 +3,8 @@ dump.rdb
 config.json
 config.*.json
 !config.dist.json
+
+# Jenkins pipeline
+/vendor
+/pkg
+.bundle
