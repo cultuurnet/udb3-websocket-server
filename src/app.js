@@ -5,7 +5,7 @@ import { initializeSocketIO } from "./io.js";
 
 const config = await readConfig();
 
-const PORT = config.port ?? 3000;
+const PORT = process.env.PORT || 3000;
 
 const httpServer = http.createServer({}, indexPageHandler);
 
