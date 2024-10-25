@@ -15,7 +15,7 @@ pipeline {
         }
 
         stage('Setup and build') {
-            agent { label 'ubuntu && 16.04 && nodejs16' }
+            agent { label 'ubuntu && 20.04 && nodejs16' }
             environment {
                 GIT_SHORT_COMMIT = build.shortCommitRef()
                 ARTIFACT_VERSION = "${env.PIPELINE_VERSION}" + '+sha.' + "${env.GIT_SHORT_COMMIT}"
@@ -67,7 +67,7 @@ pipeline {
                 APPLICATION_ENVIRONMENT = 'development'
             }
             steps {
-                publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.REPOSITORY_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'xenial'
+                publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.REPOSITORY_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'focal'
             }
         }
 
@@ -78,8 +78,8 @@ pipeline {
                 APPLICATION_ENVIRONMENT = 'acceptance'
             }
             steps {
-                publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.REPOSITORY_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'xenial'
-                triggerDeployment nodeName: 'udb3-web-acc02', timeout: 600
+                publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.REPOSITORY_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'focal'
+                triggerDeployment nodeName: 'uitdatabank-web-acc01', timeout: 600
             }
             post {
                 always {
@@ -96,8 +96,8 @@ pipeline {
                 APPLICATION_ENVIRONMENT = 'testing'
             }
             steps {
-                publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.REPOSITORY_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'xenial'
-                triggerDeployment nodeName: 'udb3-web-test03', timeout: 600
+                publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.REPOSITORY_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'focal'
+                triggerDeployment nodeName: 'uitdatabank-web-test01', timeout: 600
             }
             post {
                 always {
@@ -114,8 +114,8 @@ pipeline {
                 APPLICATION_ENVIRONMENT = 'production'
             }
             steps {
-                publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.REPOSITORY_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'xenial'
-                triggerDeployment nodeName: 'udb3-web-prod03', timeout: 600
+                publishAptlySnapshot snapshotName: "${env.REPOSITORY_NAME}-${env.PIPELINE_VERSION}", publishTarget: "${env.REPOSITORY_NAME}-${env.APPLICATION_ENVIRONMENT}", distributions: 'focal'
+                triggerDeployment nodeName: 'uitdatabank-web-prod01', timeout: 600
             }
             post {
                 always {
@@ -128,7 +128,7 @@ pipeline {
         }
 
         stage('Tag release') {
-            agent { label 'ubuntu && 16.04' }
+            agent any
             steps {
                 copyArtifacts filter: 'pkg/*.deb', projectName: env.JOB_NAME, flatten: true, selector: specific(env.BUILD_NUMBER)
                 tagRelease commitHash: artifact.metadata(artifactFilter: '*.deb', field: 'git-ref')
