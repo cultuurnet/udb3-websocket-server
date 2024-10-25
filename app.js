@@ -2,31 +2,17 @@ var fs = require('fs');
 var redis = require('redis');
 var redisAdapter = require('socket.io-redis');
 
+const HOST = process.env.HOST || '127.0.0.1';
+const PORT = process.env.PORT || 3000;
+
 var config = {};
 
-var environment = process.env['ENV'];
-
-if (environment) {
-  config = require('./config.' + environment + '.json');
+if (fs.existsSync('./config.json')) {
+  config = require('./config.json');
+  console.log('using configuration from config.json');
 }
 else {
-  if (fs.existsSync('./config.json')) {
-    config = require('./config.json');
-    console.log('using configuration from config.json');
-  }
-  else {
-    console.log('no config.json file found, using defaults');
-  }
-}
-
-var server_options = config.server_options || {};
-
-if (server_options.cert) {
-  server_options.cert = fs.readFileSync(server_options.cert);
-}
-
-if (server_options.ca) {
-  server_options.ca = fs.readFileSync(server_options.ca);
+  console.log('no config.json file found, using defaults');
 }
 
 var app;
@@ -43,15 +29,7 @@ function handler (req, res) {
       });
 }
 
-if (server_options.key) {
-  server_options.key = fs.readFileSync(server_options.key);
-
-  app = require('https').createServer(server_options, handler);
-  console.log('Using SSL');
-}
-else {
-  app = require('http').createServer(handler);
-}
+app = require('http').createServer(handler);
 
 var pub = redis.createClient();
 var sub = redis.createClient(null, null, { detect_buffers: true });
@@ -59,8 +37,7 @@ var io = require('socket.io')(app, {
   adapter: redisAdapter(config.redis || {})
 });
 
-var fs = require('fs');
-app.listen(config.port || 3000);
+app.listen(PORT, HOST);
 
 io.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });

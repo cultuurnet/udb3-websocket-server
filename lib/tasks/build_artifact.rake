@@ -8,7 +8,7 @@ task :build_artifact do |task|
   vendor         = 'publiq VZW'
   maintainer     = 'Infra publiq <infra@publiq.be>'
   license        = 'Apache-2.0'
-  description    = 'Websocket server for UiTdatabank 3'
+  description    = 'Websocket server for UiTdatabank'
   source         = 'https://github.com/cultuurnet/udb3-websocket-server'
   build_url      = ENV['JOB_DISPLAY_URL'].nil? ? "" : ENV['JOB_DISPLAY_URL']
 
