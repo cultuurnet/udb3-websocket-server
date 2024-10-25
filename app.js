@@ -2,6 +2,9 @@ var fs = require('fs');
 var redis = require('redis');
 var redisAdapter = require('socket.io-redis');
 
+const HOST = process.env.HOST || '127.0.0.1';
+const PORT = process.env.PORT || 3000;
+
 var config = {};
 
 if (fs.existsSync('./config.json')) {
@@ -34,8 +37,7 @@ var io = require('socket.io')(app, {
   adapter: redisAdapter(config.redis || {})
 });
 
-var fs = require('fs');
-app.listen(process.env.PORT || 3000);
+app.listen(PORT, HOST);
 
 io.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });
