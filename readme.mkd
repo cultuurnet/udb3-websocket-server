@@ -1,8 +1,7 @@
 This is the Node.js Socket.IO server of the UDB3 search project.
 
-Use it in conjunction with the [UDB3 AngularJS application][udb3-angular-app] 
-and one of the UDB3 backend implementations ([Silex][udb3-silex-backend] or 
-[Drupal][udb3-drupal-backend]).
+Use it in conjunction with the [UDB3 AngularJS application][udb3-angular-app]
+and the UDB3 backend implementations ([UDB3 Backend][udb3-backend].
 
 
 [TOC]
@@ -20,7 +19,7 @@ Ensure you have installed:
 
 ## Download code & required libraries
 
-Clone the [UDB3 Socket.IO][udb3-websockets] git repository.
+Clone the [UDB3 Socket.IO][udb3-websocket-server] git repository.
 
 Install its dependencies with npm:
 
@@ -36,14 +35,7 @@ Start the Socket.IO server, which listens on port 3000:
 node app.js
 ```
 
-By default a configuration file _config.json_ is used, when present. You can
-change which configuration file is used by setting the ENV environment variable.
-For example, the following command will launch the Node.js Socket.IO server
-with the configuration from _config.dev.json_:
-
-```
-ENV=dev node app.js
-```
+By default a configuration file _config.json_ is used, when present.
 
 For a list of configuration options, read the next section.
 
@@ -51,46 +43,63 @@ For a list of configuration options, read the next section.
 
 - redis: Options passed to the socket.io-redis adapter. For more info, read the
 [socket.io-redis] documentation. Default: empty.
-- port: The port to listen on. Default: 3000.
 
 # Running it as a service
 
-We recommend to use [Supervisor] to launch and control the UDB3 Socket.IO 
+We recommend to use systemd to launch and control the UDB3 Socket.IO
 server process.
 
-Below is a sample Supervisor configuration file, named *udb3-websockets.conf*.
-Replace /path/to/udb3-websockets-server with the path to your git clone, and 
-replace *ubuntu* with the unprivileged user you want to run the server as.
-Put the configuration file at the right location depending on the approach your
- Linux flavor takes. On ubuntu, Supervisor config files typically go in the
- directory */etc/supervisor/conf.d/*.
+Below is a sample systemd service unit file, named uitdatabank-websocket-server.service.
+Replace the WorkingDirectory value with the path to your git clone, and replace
+the User and Group values with the unprivileged user you want to run the server as.
+Put the configuration file at the right location (/etc/systemd/system)
 
 ```
-[program:udb3-websockets]
-directory=/path/to/udb3-websockets
-command=/usr/bin/node app.js
-user=ubuntu
-autostart=true
-autorestart=true
-startsecs=10
+[Unit]
+Description=UiTdatabank Websocket server
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+User=www-data
+Group=www-data
+PIDFile=/var/run/udb3-websocket-server.pid
+EnvironmentFile=-/etc/default/udb3-websocket-server
+WorkingDirectory=/var/www/udb3-websocket-server
+ExecStart=/usr/bin/node --title uitdatabank-websocket-server app.js
+Restart=on-failure
+RestartSec=10s
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
 ```
 
-Then make Supervisor reload its configuration:
+Then make systemd reload its configuration:
 
 ```
-sudo supervisorctl reload
+sudo systemctl daemon-reload
 ```
 
-Verify the udb3-websockets process is running correctly:
+Verify the uitdatabank-websocket-server process is running correctly:
 
 ```
-sudo supervisorctl status
+sudo systemctl status uitdatabank-websocket-server
 ```
 
 This should output something like this (possible among other processes):
 
 ```
-udb3-websockets                  RUNNING    pid 16585, uptime 0:00:54
+● uitdatabank-websocket-server.service - UiTdatabank Websocket server
+   Loaded: loaded (/lib/systemd/system/uitdatabank-websocket-server.service; enabled; vendor preset: enabled)
+   Active: active (running) since do 2024-09-12 13:46:01 UTC; 1 months 12 days ago
+ Main PID: 4338 (uitdatabank-web)
+    Tasks: 11
+   Memory: 55.9M
+      CPU: 1min 59.334s
+   CGroup: /system.slice/uitdatabank-websocket-server.service
+           └─4338 uitdatabank-websocket-server
+
+Warning: Journal has been rotated since unit was started. Log output is incomplete or unavailable.
 ```
 
 
@@ -98,34 +107,30 @@ udb3-websockets                  RUNNING    pid 16585, uptime 0:00:54
 
 ## Apache HTTP Server
 
-Install and enable the mod_rewrite, mod_proxy and mod_proxy_wstunnel Apache 
+Install and enable the mod_rewrite, mod_proxy and mod_proxy_wstunnel Apache
 modules.
 
-Configuration sample to make Apache proxy incoming requests to the Socket.IO 
+Configuration sample to make Apache proxy incoming requests to the Socket.IO
 server running on port 3000 on the same host:
 
 ```
-RewriteEngine on
+ProxyRequests Off
+ProxyPreserveHost Off
+ProxyPass / http://127.0.0.1:3000/
+ProxyPassReverse / http://127.0.0.1:3000/
 
-RewriteCond %{QUERY_STRING} transport=polling
-RewriteRule /(.*)$ http://localhost:3000/$1 [P]
+RewriteEngine On
 
-ProxyRequests off
-ProxyPass /socket.io/ ws://localhost:3000/socket.io/
-ProxyPassReverse /socket.io/ ws://localhost:3000/socket.io/
+RewriteCond %{HTTP:Upgrade} websocket [NC]
+RewriteCond %{HTTP:Connection} upgrade [NC]
+RewriteRule /socket.io/(.*)$ ws://localhost:3000/socket.io/$1 [P]
 ```
 
-(tested with Apache 2.4.6)
+[udb3-angular-app]: https://github.com/cultuurnet/udb3-angular-app
 
-[udb3-angular-app]: https://bitbucket.org/2dotstwice/culudb-app
+[udb3-websockets]: https://github.com/cultuurnet/udb3-websocket-server
 
-[udb3-websockets]: https://bitbucket.org/2dotstwice/culudb-websockets
-
-[udb3-drupal-backend]: https://bitbucket.org/2dotstwice/culudb
-
-[udb3-silex-backend]: https://bitbucket.org/2dotstwice/culudb-silex
-
-[supervisor]: http://supervisord.org/
+[udb3-backend]: https://github.com/cultuurnet/udb3-backend
 
 [Node.js]: http://nodejs.org/
 
