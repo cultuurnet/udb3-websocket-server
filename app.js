@@ -60,7 +60,7 @@ var io = require('socket.io')(app, {
 });
 
 var fs = require('fs');
-app.listen(config.port || 3000);
+app.listen(process.env.PORT || 3000);
 
 io.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });
