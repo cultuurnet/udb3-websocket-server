@@ -14,6 +14,8 @@ task :build_artifact do |task|
 
   FileUtils.mkdir_p('pkg')
 
+  system('touch config.json') or exit 1
+
   system("fpm -s dir -t deb -n #{artifact_name} -v #{version} -a all -p pkg \
     -x '.git*' -x pkg -x vendor -x lib -x Rakefile -x Gemfile -x Gemfile.lock \
     -x .bundle -x 'Jenkinsfile*' \
