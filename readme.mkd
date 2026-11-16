@@ -39,6 +39,25 @@ By default a configuration file _config.json_ is used, when present.
 
 For a list of configuration options, read the next section.
 
+## Run the tests
+
+The tests start the server against a real Redis on 127.0.0.1:6379 and check
+what socket.io clients receive when udb3-backend publishes job messages:
+
+```
+docker run -d --rm --name websocket-test-redis -p 6379:6379 redis:7-alpine
+npm test
+```
+
+The messages in _test/fixtures_ are generated with the code udb3-backend uses to
+publish them. Regenerate them after changing _test/fixtures/generate.php_ (expects
+a udb3-backend checkout with its vendor directory next to this repository, or set
+UDB3_BACKEND):
+
+```
+npm run test:fixtures
+```
+
 # Configuration options
 
 - redis: Options passed to the socket.io-redis adapter. For more info, read the

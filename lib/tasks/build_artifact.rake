@@ -17,7 +17,7 @@ task :build_artifact do |task|
   system('touch config.json') or exit 1
 
   system("fpm -s dir -t deb -n #{artifact_name} -v #{version} -a all -p pkg \
-    -x '.git*' -x pkg -x vendor -x lib -x Rakefile -x Gemfile -x Gemfile.lock \
+    -x '.git*' -x pkg -x vendor -x lib -x test -x Rakefile -x Gemfile -x Gemfile.lock \
     -x .bundle -x 'Jenkinsfile*' \
     --prefix /var/www/udb3-websocket-server \
     --config-files /var/www/udb3-websocket-server/config.json \
