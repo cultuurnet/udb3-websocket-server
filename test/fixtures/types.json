@@ -1,0 +1,32 @@
+{
+    "event": "job_info",
+    "data": {
+        "null": null,
+        "true": true,
+        "false": false,
+        "zero": 0,
+        "negative_fixint": -32,
+        "uint8": 255,
+        "uint16": 65535,
+        "uint32": 4294967295,
+        "int8": -128,
+        "int16": -32768,
+        "int32": -2147483648,
+        "float": 1.5,
+        "empty_array": [],
+        "list": [
+            1,
+            "two",
+            3.5
+        ],
+        "nested": {
+            "level1": {
+                "level2": {
+                    "level3": "deep"
+                }
+            }
+        },
+        "string_31_bytes": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "string_32_bytes": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+}
