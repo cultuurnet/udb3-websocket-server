@@ -149,3 +149,24 @@ for (const name of fixtureNames) {
   });
 }
 
+test('keeps broadcasting after a message it cannot decode', async () => {
+  const { payload, expected } = fixture('job-finished');
+  const client = await connect();
+  const received = nextEvent(client, expected.event);
+
+  await publish(Buffer.from([0xc1]));
+  await publish(payload);
+
+  assert.deepStrictEqual(await received, expected.data);
+});
+
+test('broadcasts a message to every connected client', async () => {
+  const { payload, expected } = fixture('job-finished');
+  const first = await connect();
+  const second = await connect();
+  const received = Promise.all([nextEvent(first, expected.event), nextEvent(second, expected.event)]);
+
+  await publish(payload);
+
+  assert.deepStrictEqual(await received, [expected.data, expected.data]);
+});
