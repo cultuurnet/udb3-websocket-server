@@ -1,6 +1,6 @@
 var fs = require('fs');
 var redis = require('redis');
-var redisAdapter = require('socket.io-redis');
+var msgpack = require('@msgpack/msgpack');
 
 const HOST = process.env.HOST || '127.0.0.1';
 const PORT = process.env.PORT || 3000;
@@ -31,10 +31,32 @@ function handler (req, res) {
 
 app = require('http').createServer(handler);
 
-var pub = redis.createClient();
-var sub = redis.createClient(null, null, { detect_buffers: true });
 var io = require('socket.io')(app, {
-  adapter: redisAdapter(config.redis || {})
+  // Keep accepting the socket.io v1/v2 clients of udb3-angular-app and udb3-frontend
+  allowEIO3: true,
+  cors: { origin: true, credentials: true }
+});
+
+var redisConfig = config.redis || {};
+var sub = redis.createClient({
+  socket: { host: redisConfig.host || '127.0.0.1', port: redisConfig.port || 6379 }
+});
+
+sub.on('error', function (err) {
+  console.error('redis error', err);
+});
+
+// udb3-backend publishes msgpack encoded [packet, { rooms, flags }] messages
+// with the socket.io-emitter format, which are broadcast to all clients.
+sub.connect().then(function () {
+  return sub.subscribe((redisConfig.key || 'socket.io') + '#emitter', function (message) {
+    try {
+      var packet = msgpack.decode(message)[0];
+      io.emit.apply(io, packet.data);
+    } catch (err) {
+      console.error('unable to handle emitter message', err);
+    }
+  }, true);
 });
 
 app.listen(PORT, HOST);
@@ -45,8 +67,4 @@ io.on('connection', function (socket) {
   socket.on('my other event', function (data) {
     console.log(data);
   });
-});
-
-io.on('time', function (data) {
-  console.log(data);
 });

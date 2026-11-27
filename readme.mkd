@@ -60,8 +60,12 @@ npm run test:fixtures
 
 # Configuration options
 
-- redis: Options passed to the socket.io-redis adapter. For more info, read the
-[socket.io-redis] documentation. Default: empty.
+- redis: Connection to the Redis server on which udb3-backend publishes its
+messages, with the socket.io-emitter format. Every message is broadcast to all
+connected clients.
+  - host: Default: 127.0.0.1
+  - port: Default: 6379
+  - key: Channel prefix, messages are read from `<key>#emitter`. Default: socket.io
 
 # Running it as a service
 
@@ -154,5 +158,3 @@ RewriteRule /socket.io/(.*)$ ws://localhost:3000/socket.io/$1 [P]
 [Node.js]: http://nodejs.org/
 
 [Redis]: http://redis.io/
-
-[socket.io-redis]: https://github.com/Automattic/socket.io-redis
